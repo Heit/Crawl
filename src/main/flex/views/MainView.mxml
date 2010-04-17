@@ -1,0 +1,131 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+         xmlns:mate="http://mate.asfusion.com/"
+         width="100%" height="100%"
+         currentState="{crawlModel.state}"
+        >
+    <mx:Script>
+  <![CDATA[
+        import events.CrawlEvent;
+
+        import presenters.CrawlerPresentationModel;
+
+        private function startCrawling():void {
+            crawlDispatcher.generateEvent();
+        }
+
+        private function startSearching():void {
+            searchDispatcher.generateEvent();
+        }
+
+        private function startHighlighting():void {
+            highlightDispatcher.generateEvent();
+        }
+
+        [Bindable]
+        public var crawlModel:CrawlerPresentationModel;
+
+  ]]>
+  </mx:Script>
+
+    <mx:transitions>
+        <mx:Transition id="loginTransition"
+                       fromState="{CrawlerPresentationModel.INIT}"
+                       toState="{CrawlerPresentationModel.CRAWL}">
+            <mx:WipeDown target="{documentsPanel}"/>
+        </mx:Transition>
+        <mx:Transition id="registerTransition"
+                       fromState="{CrawlerPresentationModel.INIT}"
+                       toState="{CrawlerPresentationModel.SEARCH}">
+            <mx:WipeDown target="{searchPanel}"/>
+        </mx:Transition>
+    </mx:transitions>
+
+
+    <mx:HBox width="100%" horizontalAlign="left">
+        <mx:Panel title="Параметры индексирования" height="175" width="49%">
+            <mx:Form id="crawlForm">
+                <mx:FormItem label="Host" required="true">
+                    <mx:TextInput id="hostname" width="150" text="http://kursksu.ru"/>
+                </mx:FormItem>
+                <mx:FormItem label="Base Path" required="false">
+                    <mx:TextInput id="basepath" width="150" text="/"/>
+                </mx:FormItem>
+            </mx:Form>
+            <mx:ControlBar>
+                <mx:LinkButton id="startCrawl" label="Добавить в индекс" click="startCrawling();"/>
+            </mx:ControlBar>
+        </mx:Panel>
+        <mx:Panel title="Параметры поиска" height="175" width="49%">
+            <mx:Form id="searchForm">
+                <mx:FormItem label="Query String" required="true">
+                    <mx:TextArea id="queryString" width="150" text="Введите текст запроса"/>
+                </mx:FormItem>
+            </mx:Form>
+            <mx:ControlBar>
+                <mx:LinkButton id="doSearch" label="Начать поиск" click="startSearching();"/>
+            </mx:ControlBar>
+        </mx:Panel>
+    </mx:HBox>
+
+    <mx:states>
+        <mx:State name="{CrawlerPresentationModel.INIT}"/>
+        <mx:State name="{CrawlerPresentationModel.CRAWL}">
+            <mx:AddChild relativeTo="{searchHbox}">
+                <mx:Panel id="documentsPanel"
+                          title="Просмотрено адресов" width="98%" height="200">
+                    <mx:List width="100%" height="150"
+                             dataProvider="{crawlModel.documents}"
+                             labelField="uri"/>
+                </mx:Panel>
+            </mx:AddChild>
+        </mx:State>
+        <mx:State name="{CrawlerPresentationModel.SEARCH}">
+            <mx:AddChild relativeTo="{searchHbox}">
+                <mx:Panel id="searchPanel" title="Результат поискового запроса" width="98%" height="200">
+                    <mx:List width="100%" dataProvider="{crawlModel.results}" height="150"
+                             labelField="uri"
+                             id="searched"
+                             change="startHighlighting();">
+                    </mx:List>
+                </mx:Panel>
+            </mx:AddChild>
+        </mx:State>
+        <mx:State name="{CrawlerPresentationModel.HIGHLIGHT}" basedOn="{CrawlerPresentationModel.SEARCH}">
+            <mx:AddChild relativeTo="{highlightResult}">
+                <mx:TextArea id="searchData" height="100%" editable="false" width="98%"
+                             htmlText="{crawlModel.bestFragment.data}"/>
+            </mx:AddChild>
+        </mx:State>
+    </mx:states>
+
+    <mx:HBox id="searchHbox" width="100%" height="200"/>
+
+    <mx:Box id="highlightResult" width="100%" height="100"/>
+
+    <mate:Dispatcher id="crawlDispatcher"
+                     type="{CrawlEvent.CRAWL}"
+                     generator="{CrawlEvent}">
+        <mate:eventProperties>
+            <mate:EventProperties host="{hostname.text}" baseurl="{basepath.text}"/>
+        </mate:eventProperties>
+    </mate:Dispatcher>
+
+    <mate:Dispatcher id="searchDispatcher"
+                     type="{CrawlEvent.SEARCH}"
+                     generator="{CrawlEvent}">
+        <mate:eventProperties>
+            <mate:EventProperties query="{queryString.text}"/>
+        </mate:eventProperties>
+    </mate:Dispatcher>
+
+    <mate:Dispatcher id="highlightDispatcher"
+                     type="{CrawlEvent.HIGHLIGHT}"
+                     generator="{CrawlEvent}">
+        <mate:eventProperties>
+            <mate:EventProperties query="{queryString.text}" path="{searched.selectedItem.data}"/>
+        </mate:eventProperties>
+    </mate:Dispatcher>
+
+
+</mx:VBox>

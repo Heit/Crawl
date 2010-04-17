@@ -1,0 +1,23 @@
+Application {
+  fontFamily: Tahoma;
+  fontSize: 14px;
+  color: #666666;
+  backgroundColor: #ffffff;
+  backgroundGradientAlphas:0,0;
+  cornerRadius: 10px;
+}
+
+TextInput {
+  borderStyle: solid;
+  borderColor: #7d99ac;
+}
+
+ApplicationControlBar {
+  backgroundColor: #CDEB8B;
+}
+
+Panel {
+  backgroundColor: #CDEB8B;
+}
+
+

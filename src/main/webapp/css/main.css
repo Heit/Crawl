@@ -1,0 +1,17 @@
+body {
+  font-size: 10pt;
+  font-family: Trebuchet MS, sans-serif;
+  margin:0;
+  padding:10px 0;
+}
+
+img {
+  border:none;
+}
+
+#container {
+  border: 1px solid #DDDDD;
+  margin: 0 auto;
+  padding: 0;
+  width: 800px;
+}

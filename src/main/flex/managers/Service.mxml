@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mx:Object xmlns:mx="http://www.adobe.com/2006/mxml">
+
+  <mx:Script><![CDATA[
+    import events.ServerEvent;
+
+    import mx.controls.Alert;
+    import mx.rpc.events.FaultEvent;
+    import mx.rpc.events.ResultEvent;
+
+
+    public function getDocuments(host:String, baseurl:String):void {
+      crawlSvc.addEventListener(ResultEvent.RESULT, handleResult);
+      crawlSvc.addEventListener(FaultEvent.FAULT, faultCrawlHandler);
+      crawlSvc.crawl(host, baseurl);
+
+      function handleResult(event:ResultEvent):void {
+        var srvEvent:ServerEvent = new ServerEvent(ServerEvent.CRAWL_DONE);
+        srvEvent.data = event.result;
+        crawlSvc.dispatchEvent(srvEvent);
+        crawlSvc.removeEventListener(ResultEvent.RESULT, handleResult);
+        crawlSvc.removeEventListener(FaultEvent.FAULT, faultCrawlHandler);
+      }
+
+      function faultCrawlHandler(event:FaultEvent):void {
+          trace(event.toString());
+          crawlSvc.dispatchEvent(new ServerEvent(ServerEvent.SERVER_ERROR));
+          crawlSvc.removeEventListener(ResultEvent.RESULT, handleResult);
+          crawlSvc.removeEventListener(FaultEvent.FAULT, faultCrawlHandler);
+        }
+
+    }
+
+    public function doSearch(searchRequest:String):void {
+      crawlSvc.addEventListener(ResultEvent.RESULT, handleSearchResult);
+      crawlSvc.addEventListener(FaultEvent.FAULT, faultCrawlHandler);
+      crawlSvc.search(searchRequest);
+      
+      function handleSearchResult(event:ResultEvent):void {
+        var srvEvent:ServerEvent = new ServerEvent(ServerEvent.SEARCH_DONE);
+        srvEvent.data = event.result;
+        crawlSvc.dispatchEvent(srvEvent);
+        crawlSvc.removeEventListener(ResultEvent.RESULT, handleSearchResult);
+        crawlSvc.removeEventListener(FaultEvent.FAULT, faultCrawlHandler);
+      }
+
+      function faultCrawlHandler(event:FaultEvent):void {
+          trace(event.toString());
+          crawlSvc.dispatchEvent(new ServerEvent(ServerEvent.SERVER_ERROR));
+          crawlSvc.removeEventListener(ResultEvent.RESULT, handleSearchResult);
+          crawlSvc.removeEventListener(FaultEvent.FAULT, faultCrawlHandler);
+        }
+
+    }
+
+    public function highlightResults(query:String, path:String):void{
+       crawlSvc.addEventListener(ResultEvent.RESULT, handleSearchResult);
+       crawlSvc.addEventListener(FaultEvent.FAULT, faultCrawlHandler);
+       crawlSvc.highlightResults(query,path);
+
+      function handleSearchResult(event:ResultEvent):void {
+        var srvEvent:ServerEvent = new ServerEvent(ServerEvent.HIGHLIGHT_DONE);
+        srvEvent.data = event.result;
+        crawlSvc.dispatchEvent(srvEvent);
+        crawlSvc.removeEventListener(ResultEvent.RESULT, handleSearchResult);
+        crawlSvc.removeEventListener(FaultEvent.FAULT, faultCrawlHandler);
+      }
+
+      function faultCrawlHandler(event:FaultEvent):void {
+          trace(event.toString());
+          crawlSvc.dispatchEvent(new ServerEvent(ServerEvent.SERVER_ERROR));
+          crawlSvc.removeEventListener(ResultEvent.RESULT, handleSearchResult);
+          crawlSvc.removeEventListener(FaultEvent.FAULT, faultCrawlHandler);
+        }
+    }
+
+    ]]></mx:Script>
+
+  <mx:RemoteObject id="crawlSvc" destination="crawlService" showBusyCursor="true"/>
+
+</mx:Object>

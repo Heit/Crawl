@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EventMap xmlns="http://mate.asfusion.com/"
+          xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:managers="managers.*">
+  <Debugger level="{Debugger.ALL}"/>
+
+  <mx:Script><![CDATA[
+
+    import events.CrawlEvent;
+
+    import managers.CrawlManager;
+
+    import mx.events.FlexEvent;
+
+    import presenters.CrawlerPresentationModel;
+
+    import views.MainView;
+
+    ]]>
+  </mx:Script>
+
+  <EventHandlers type="{FlexEvent.PREINITIALIZE}" debug="true">
+    <ObjectBuilder generator="{CrawlManager}"
+                   constructorArguments="{[scope.dispatcher, service ]}"/>
+    <ObjectBuilder generator="{CrawlerPresentationModel}"
+                   constructorArguments="{[scope.dispatcher]}"/>
+  </EventHandlers>
+
+
+  <EventHandlers type="{CrawlEvent.CRAWL}" debug="true">
+
+    <MethodInvoker generator="{CrawlManager}"
+                   constructorArguments="{[scope.dispatcher, service ]}"
+                   method="getDocuments"
+                   arguments="{[event.host, event. baseurl]}"/>
+
+  </EventHandlers>
+
+
+  <EventHandlers type="{CrawlEvent.SEARCH}" debug="true">
+    <MethodInvoker generator="{CrawlManager}"
+                   constructorArguments="{[scope.dispatcher, service ]}"
+                   method="doSearch"
+                   arguments="{[event.query]}"/>
+
+  </EventHandlers>
+
+  <EventHandlers type="{CrawlEvent.HIGHLIGHT}" debug="true">
+    <MethodInvoker generator="{CrawlManager}"
+                   constructorArguments="{[scope.dispatcher, service ]}"
+                   method="highlightResults"
+                   arguments="{[event.query, event.path]}"/>
+
+  </EventHandlers>
+
+
+  <Injectors target="{MainView}">
+    <PropertyInjector targetKey="crawlModel" source="{CrawlerPresentationModel}"/>
+  </Injectors>
+
+
+  <Injectors target="{CrawlerPresentationModel}">
+
+    <PropertyInjector targetKey="documents" source="{CrawlManager}" sourceKey="crawledDocumets"/>
+
+    <PropertyInjector targetKey="results" source="{CrawlManager}" sourceKey="searchResults"/>
+
+    <PropertyInjector targetKey="bestFragment" source="{CrawlManager}" sourceKey="highlight"/>
+  </Injectors>
+
+
+  <managers:Service id="service"/>
+
+</EventMap>

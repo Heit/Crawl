@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application
+    xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:maps="maps.*"
+    xmlns:views="views.*"
+    layout="vertical">
+
+  <mx:Style source="css/main.css"/>
+
+  <mx:ApplicationControlBar width="100%" height="40">
+      <mx:Label fontSize="14"
+              text="Дипломный проект встраиваемой поисковой системы"/>
+  </mx:ApplicationControlBar>
+
+  <maps:MainEventMap/>
+  <views:MainView/>
+
+</mx:Application>

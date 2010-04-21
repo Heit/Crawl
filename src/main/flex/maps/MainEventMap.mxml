@@ -25,6 +25,19 @@
                    constructorArguments="{[scope.dispatcher]}"/>
   </EventHandlers>
 
+  <EventHandlers type="{CrawlEvent.PREPARECRAWL}" debug="true">
+     <ObjectBuilder generator="{CrawlerPresentationModel}"
+                   constructorArguments="{[scope.dispatcher]}">
+       <Properties state ="{CrawlerPresentationModel.PREPARECRAWL}" />
+     </ObjectBuilder>
+  </EventHandlers>
+
+   <EventHandlers type="{CrawlEvent.PREPARESEARCH}" debug="true">
+     <ObjectBuilder generator="{CrawlerPresentationModel}"
+                   constructorArguments="{[scope.dispatcher]}">
+       <Properties state ="{CrawlerPresentationModel.PREPARESEARCH}" />
+     </ObjectBuilder>
+  </EventHandlers>
 
   <EventHandlers type="{CrawlEvent.CRAWL}" debug="true">
 

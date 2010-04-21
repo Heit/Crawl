@@ -1,18 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application
     xmlns:mx="http://www.adobe.com/2006/mxml"
+    xmlns:mate="http://mate.asfusion.com/"
     xmlns:maps="maps.*"
     xmlns:views="views.*"
-    layout="vertical">
+    layout="vertical"
+    currentState="initial">
+
+  <mx:Script><![CDATA[
+    import events.CrawlEvent;
+    ]]></mx:Script>
 
   <mx:Style source="css/main.css"/>
 
-  <mx:ApplicationControlBar width="100%" height="40">
-      <mx:Label fontSize="14"
-              text="Дипломный проект встраиваемой поисковой системы"/>
-  </mx:ApplicationControlBar>
-
   <maps:MainEventMap/>
-  <views:MainView/>
+
+  <mx:transitions>
+    <mx:Transition fromState="initial" toState="*">
+      <mx:Parallel targets="{[mainView]}">
+        <mx:WipeDown/>
+        <mx:Fade/>
+      </mx:Parallel>
+    </mx:Transition>
+  </mx:transitions>
+
+
+  <mx:states>
+    <mx:State name="initial">
+      <mx:AddChild>
+        <mx:HBox>
+          <mx:Spacer height="30" width="100%"/>
+          <mx:Button id="idxUpdate"
+                     icon="@Embed(source='/assets/images/chart.png')"
+                     label="Обновление индекса"
+                     styleName="coloredButton"
+                     click="currentState = 'process'; crawlDispatcher.generateEvent();"/>
+          <mx:Button id="idxSearch"
+                     icon="@Embed(source='/assets/images/search.png')"
+                     label="Поиск по индексу"
+                     styleName="coloredButton"
+                     click="currentState = 'process'; searchDispatcher.generateEvent();"/>
+        </mx:HBox>
+      </mx:AddChild>
+    </mx:State>
+    <mx:State name="process">
+      <mx:AddChild>
+        <views:MainView id="mainView"/>
+      </mx:AddChild>
+    </mx:State>
+  </mx:states>
+
+
+  <mate:Dispatcher id="crawlDispatcher"
+                   type="{CrawlEvent.PREPARECRAWL}"
+                   generator="{CrawlEvent}"/>
+
+  <mate:Dispatcher id="searchDispatcher"
+                   type="{CrawlEvent.PREPARESEARCH}"
+                   generator="{CrawlEvent}"/>
+
 
 </mx:Application>

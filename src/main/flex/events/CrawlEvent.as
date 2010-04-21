@@ -4,7 +4,11 @@ package events{
 
     public class CrawlEvent extends Event{
 
+        public static const PREPARECRAWL:String = "prepareCrawlEvent";
+
         public static const CRAWL:String = "crawlEvent";
+
+        public static const PREPARESEARCH:String = "prepareSerachEvent";
 
         public static const SEARCH:String = "searchEvent";
 

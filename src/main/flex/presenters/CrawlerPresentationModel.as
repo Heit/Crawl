@@ -19,6 +19,10 @@ public class CrawlerPresentationModel extends EventDispatcher {
 
   public static const HIGHLIGHT:String = "highlightEnabled";
 
+  public static const PREPARECRAWL:String = "prepareCrawl";
+
+  public static const PREPARESEARCH:String = "prepareSearch";
+
   private var _state:String = INIT;
 
   public var _documents:ArrayCollection = new ArrayCollection();

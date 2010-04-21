@@ -20,4 +20,22 @@ Panel {
   backgroundColor: #CDEB8B;
 }
 
+.coloredButton{
+   skin: ClassReference("skins.ButtonSkin");
+   fontSize:16;
+   fontWeight:bold;
+   fontFamily: Tahoma;
+   paddingLeft:13;
+   paddingRight:23;
+   paddingTop:10;
+   paddingBottom:10;
+   color:#ffffff;
+   textRollOverColor:#ffffff;
+   cornerRadius:5;
+   borderThickness:1;
+   borderColor:#cccccc;
+   borderStyle:solid;
+   backgroundColor: #CDEB8B;
+}
+
 
